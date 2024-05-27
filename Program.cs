@@ -1,35 +1,28 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using CalculatorApp;
+using Microsoft.Extensions.DependencyInjection;
 
-using CalculatorApp;
-
+Console.WriteLine("Enter first number:");
 string input1 = Console.ReadLine();
+double.TryParse(input1, out double number1);
+
+Console.WriteLine("Enter second number:");
 string input2 = Console.ReadLine();
+double.TryParse(input2, out double number2);
+
+Console.WriteLine("Enter operation (+, -, /, *):");
 char actionType = char.Parse(Console.ReadLine());
 
+var serviceProvider = new ServiceCollection()
+    .AddTransient<ICalculator, Add>()
+    .AddTransient<ICalculator, Subtract>()
+    .AddTransient<ICalculator, Multiply>()
+    .AddTransient<ICalculator, Divide>()
+    .BuildServiceProvider();
 
-double.TryParse(input1, out double number1);
-Console.WriteLine(number1);
+var services = serviceProvider.GetServices<ICalculator>();
 
-double.TryParse(input2, out double number2);
-Console.WriteLine(number2);
+var operation = services.FirstOrDefault(calc => calc.ActionType == actionType);
 
-var calculator = new Calculator();
-var result = calculator.PerformOperation(number1, number2, actionType);
-Console.WriteLine($"result {result}");
+var result = operation?.Execute(number1, number2);
 
-//var calculator = new Calculator();
-//var sum = calculator.Add(number1, number2);
-
-//Console.WriteLine($"Sum: {sum}");
-
-//var substract = calculator.Subtract(number1, number2);
-
-//Console.WriteLine($"substract: {substract}");
-
-//var divide = calculator.Divide(number1, number2);
-
-//Console.WriteLine($"Divide: {divide}");
-
-//var multiply = calculator.Multiply(number1, number2);
-
-//Console.WriteLine($"Multiply: {multiply}");
+Console.WriteLine($"Result: {result}");

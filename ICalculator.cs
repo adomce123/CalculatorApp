@@ -2,7 +2,7 @@
 {
     internal interface ICalculator
     {
-        double Calc(double x, double y);
+        double Execute(double x, double y);
         char ActionType { get; }
     }
 }
